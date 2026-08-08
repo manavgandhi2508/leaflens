@@ -1,6 +1,6 @@
 import numpy as np
 import tensorflow as tf
-from PIL import Image
+from PIL import Image, ImageOps
 
 def preprocess_image_for_model(image: Image.Image) -> np.ndarray:
     """
@@ -23,5 +23,17 @@ def preprocess_image_for_model(image: Image.Image) -> np.ndarray:
     return img_array
 
 def load_image_from_upload(uploaded_file) -> Image.Image:
-    """Loads an image from a Streamlit uploaded file."""
-    return Image.open(uploaded_file)
+    """Loads an image from a Streamlit uploaded file and sanitizes it."""
+    image = Image.open(uploaded_file)
+    
+    # Safely strip EXIF data and apply rotation (prevents Streamlit TypeErrors on mobile images)
+    try:
+        image = ImageOps.exif_transpose(image)
+    except Exception:
+        pass
+        
+    # Convert to standard RGB to prevent rendering errors in st.image
+    if image.mode != 'RGB':
+        image = image.convert('RGB')
+        
+    return image
