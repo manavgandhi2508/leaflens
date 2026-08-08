@@ -21,18 +21,6 @@ st.set_page_config(
 # Custom CSS for polished UI
 st.markdown("""
 <style>
-    .main-header {
-        text-align: center;
-        padding: 2rem;
-        background-color: #f8f9fa;
-        border-radius: 10px;
-        margin-bottom: 2rem;
-        border-bottom: 4px solid #4CAF50;
-    }
-    .main-header h1 {
-        color: #2e7d32;
-        margin-bottom: 0.5rem;
-    }
     .status-badge {
         display: inline-block;
         padding: 0.5em 1em;
@@ -45,14 +33,6 @@ st.markdown("""
     .badge-attention { background-color: #FF9800; }
     .badge-disease { background-color: #f44336; }
     
-    .section-card {
-        background-color: #ffffff;
-        padding: 1.5rem;
-        border-radius: 10px;
-        box-shadow: 0 4px 6px rgba(0,0,0,0.05);
-        margin-bottom: 1.5rem;
-        border: 1px solid #e0e0e0;
-    }
     .footer-text {
         text-align: center;
         font-size: 0.8rem;
@@ -63,13 +43,10 @@ st.markdown("""
 """, unsafe_allow_html=True)
 
 def main():
-    st.markdown("""
-    <div class="main-header">
-        <h1>🌿 LeafLens</h1>
-        <h3>AI Powered Plant Health & Disease Analysis</h3>
-        <p>Upload a clear photograph of a plant leaf to identify possible diseases, visible stress symptoms and recommended next steps.</p>
-    </div>
-    """, unsafe_allow_html=True)
+    st.title("🌿 LeafLens")
+    st.subheader("AI Powered Plant Health & Disease Analysis")
+    st.write("Upload a clear photograph of a plant leaf to identify possible diseases, visible stress symptoms and recommended next steps.")
+    st.markdown("---")
 
     # Load Model Early
     model = load_cnn_model()
@@ -77,87 +54,83 @@ def main():
     col1, col2 = st.columns(2)
 
     with col1:
-        st.markdown("<div class='section-card'>", unsafe_allow_html=True)
-        st.subheader("📸 Image Input")
-        uploaded_file = st.file_uploader(
-            "Drag and drop a leaf image here", 
-            type=['jpg', 'jpeg', 'png']
-        )
-        
-        if uploaded_file is not None:
-            image = load_image_from_upload(uploaded_file)
-            st.image(image, use_column_width=True, caption="Uploaded Leaf Preview")
-            st.caption(f"**Filename:** {uploaded_file.name} | **Resolution:** {image.size[0]}x{image.size[1]}px")
-            analyze_button = st.button("🔍 Analyze Leaf", use_container_width=True, type="primary")
-        else:
-            analyze_button = False
+        with st.container(border=True):
+            st.subheader("📸 Image Input")
+            uploaded_file = st.file_uploader(
+                "Drag and drop a leaf image here", 
+                type=['jpg', 'jpeg', 'png']
+            )
             
-        st.markdown("</div>", unsafe_allow_html=True)
+            if uploaded_file is not None:
+                image = load_image_from_upload(uploaded_file)
+                st.image(image, use_column_width=True, caption="Uploaded Leaf Preview")
+                st.caption(f"**Filename:** {uploaded_file.name} | **Resolution:** {image.size[0]}x{image.size[1]}px")
+                analyze_button = st.button("🔍 Analyze Leaf", use_container_width=True, type="primary")
+            else:
+                analyze_button = False
 
     with col2:
-        st.markdown("<div class='section-card'>", unsafe_allow_html=True)
-        st.subheader("🔬 Analysis Result")
-        
-        if uploaded_file is None:
-            st.info("Upload a leaf image to begin analysis.")
-        elif analyze_button:
-            if model is None:
-                st.error("Error: Could not load the CNN model.")
-            else:
-                with st.spinner("Analyzing plant health..."):
-                    # 1. Image Preprocessing & CNN Inference
-                    img_array = preprocess_image_for_model(image)
-                    prediction_result = predict_disease(model, img_array)
-                    
-                    # 2. Visual Symptom Analysis
-                    symptoms = analyze_visual_symptoms(image)
-                    
-                    # 3. Get Recommendations
-                    recs = get_recommendations(
-                        prediction_result["disease"], 
-                        prediction_result["status"], 
-                        symptoms
-                    )
-                    
-                    # 4. Optional Gemini Language Format
-                    formatted_report = generate_formatted_report(
-                        prediction_result["plant"],
-                        prediction_result["disease"],
-                        prediction_result["confidence"],
-                        symptoms
-                    )
-
-                # -- UI Display --
-                st.markdown("### A. AI CLASSIFICATION")
-                st.write(f"**Plant:** {prediction_result['plant']}")
-                st.write(f"**Detected condition:** {prediction_result['disease']}")
-                st.write(f"**Model confidence:** {prediction_result['confidence']:.1%}")
-                
-                # Badge
-                if prediction_result["status"] == "Healthy":
-                    st.markdown("<span class='status-badge badge-healthy'>🟢 HEALTHY</span>", unsafe_allow_html=True)
-                elif prediction_result["confidence"] < 0.6:
-                    st.markdown("<span class='status-badge badge-attention'>🟠 ATTENTION REQUIRED</span>", unsafe_allow_html=True)
+        with st.container(border=True):
+            st.subheader("🔬 Analysis Result")
+            
+            if uploaded_file is None:
+                st.info("Upload a leaf image to begin analysis.")
+            elif analyze_button:
+                if model is None:
+                    st.error("Error: Could not load the CNN model.")
                 else:
-                    st.markdown("<span class='status-badge badge-disease'>🔴 DISEASE DETECTED</span>", unsafe_allow_html=True)
-                
-                with st.expander("Top 3 CNN Predictions"):
-                    for i, t in enumerate(prediction_result["top_3"]):
-                        st.write(f"{i+1}. {t['plant']} — {t['disease']}: {t['confidence']:.1%}")
+                    with st.spinner("Analyzing plant health..."):
+                        # 1. Image Preprocessing & CNN Inference
+                        img_array = preprocess_image_for_model(image)
+                        prediction_result = predict_disease(model, img_array)
                         
-                st.divider()
-                
-                st.markdown("### B. VISIBLE LEAF SYMPTOMS")
-                st.write("**Visible symptoms:**")
-                for obs in symptoms["observations"]:
-                    st.write(f"• {obs}")
+                        # 2. Visual Symptom Analysis
+                        symptoms = analyze_visual_symptoms(image)
+                        
+                        # 3. Get Recommendations
+                        recs = get_recommendations(
+                            prediction_result["disease"], 
+                            prediction_result["status"], 
+                            symptoms
+                        )
+                        
+                        # 4. Optional Gemini Language Format
+                        formatted_report = generate_formatted_report(
+                            prediction_result["plant"],
+                            prediction_result["disease"],
+                            prediction_result["confidence"],
+                            symptoms
+                        )
+
+                    # -- UI Display --
+                    st.markdown("### A. AI CLASSIFICATION")
+                    st.write(f"**Plant:** {prediction_result['plant']}")
+                    st.write(f"**Detected condition:** {prediction_result['disease']}")
+                    st.write(f"**Model confidence:** {prediction_result['confidence']:.1%}")
                     
-                st.divider()
-                
-                st.markdown("### C. COMPREHENSIVE REPORT (AI Formatted)")
-                st.markdown(formatted_report)
-                
-        st.markdown("</div>", unsafe_allow_html=True)
+                    # Badge
+                    if prediction_result["status"] == "Healthy":
+                        st.markdown("<span class='status-badge badge-healthy'>🟢 HEALTHY</span>", unsafe_allow_html=True)
+                    elif prediction_result["confidence"] < 0.6:
+                        st.markdown("<span class='status-badge badge-attention'>🟠 ATTENTION REQUIRED</span>", unsafe_allow_html=True)
+                    else:
+                        st.markdown("<span class='status-badge badge-disease'>🔴 DISEASE DETECTED</span>", unsafe_allow_html=True)
+                    
+                    with st.expander("Top 3 CNN Predictions"):
+                        for i, t in enumerate(prediction_result["top_3"]):
+                            st.write(f"{i+1}. {t['plant']} — {t['disease']}: {t['confidence']:.1%}")
+                            
+                    st.divider()
+                    
+                    st.markdown("### B. VISIBLE LEAF SYMPTOMS")
+                    st.write("**Visible symptoms:**")
+                    for obs in symptoms["observations"]:
+                        st.write(f"• {obs}")
+                        
+                    st.divider()
+                    
+                    st.markdown("### C. COMPREHENSIVE REPORT (AI Formatted)")
+                    st.markdown(formatted_report)
 
     # Technical Architecture Section
     st.markdown("---")
@@ -191,29 +164,27 @@ def main():
     col3, col4 = st.columns(2)
     
     with col3:
-        st.markdown("<div class='section-card'>", unsafe_allow_html=True)
-        st.subheader("Model Details")
-        st.write("**Model type:** Convolutional Neural Network (CNN)")
-        st.write("**Framework:** TensorFlow / Keras")
-        st.write("**Input:** 128 × 128 RGB leaf image")
-        st.write("**Output:** 38 classification probabilities")
-        st.write("**Dataset:** New Plant Diseases Dataset / PlantVillage-derived dataset")
-        st.write("**Approximate dataset size:** ~87,000 RGB leaf images")
-        st.write("**Supported crops:** 14 plant categories including Tomato, Potato, Apple, Corn, Grape, Pepper and others.")
-        st.write("**Prediction:** Highest Softmax probability")
-        st.markdown("</div>", unsafe_allow_html=True)
+        with st.container(border=True):
+            st.subheader("Model Details")
+            st.write("**Model type:** Convolutional Neural Network (CNN)")
+            st.write("**Framework:** TensorFlow / Keras")
+            st.write("**Input:** 128 × 128 RGB leaf image")
+            st.write("**Output:** 38 classification probabilities")
+            st.write("**Dataset:** New Plant Diseases Dataset / PlantVillage-derived dataset")
+            st.write("**Approximate dataset size:** ~87,000 RGB leaf images")
+            st.write("**Supported crops:** 14 plant categories including Tomato, Potato, Apple, Corn, Grape, Pepper and others.")
+            st.write("**Prediction:** Highest Softmax probability")
         
     with col4:
-        st.markdown("<div class='section-card'>", unsafe_allow_html=True)
-        st.subheader("Tech Stack")
-        st.write("**Frontend / Interface:** Streamlit")
-        st.write("**Programming Language:** Python")
-        st.write("**Machine Learning:** TensorFlow + Keras CNN")
-        st.write("**Image Processing:** Pillow + NumPy + OpenCV")
-        st.write("**Data Handling:** Pandas")
-        st.write("**Optional Language Generation:** Google Gemini API")
-        st.write("**Model File:** .keras")
-        st.markdown("</div>", unsafe_allow_html=True)
+        with st.container(border=True):
+            st.subheader("Tech Stack")
+            st.write("**Frontend / Interface:** Streamlit")
+            st.write("**Programming Language:** Python")
+            st.write("**Machine Learning:** TensorFlow + Keras CNN")
+            st.write("**Image Processing:** Pillow + NumPy + OpenCV")
+            st.write("**Data Handling:** Pandas")
+            st.write("**Optional Language Generation:** Google Gemini API")
+            st.write("**Model File:** .keras")
 
     with st.expander("Technical Explanation"):
         st.write("**CNN**")
