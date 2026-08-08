@@ -103,7 +103,7 @@ def main():
                         )
 
                     # -- UI Display --
-                    st.markdown("### A. AI CLASSIFICATION")
+                    st.markdown("### A. CLASSIFICATION")
                     st.write(f"**Plant:** {prediction_result['plant']}")
                     st.write(f"**Detected condition:** {prediction_result['disease']}")
                     st.write(f"**Model confidence:** {prediction_result['confidence']:.1%}")
@@ -129,7 +129,7 @@ def main():
                         
                     st.divider()
                     
-                    st.markdown("### C. COMPREHENSIVE REPORT (AI Formatted)")
+                    st.markdown("### C. COMPREHENSIVE REPORT")
                     st.markdown(formatted_report)
 
     # Technical Architecture Section
