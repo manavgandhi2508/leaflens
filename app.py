@@ -12,7 +12,7 @@ from services.recommendations import get_recommendations
 from services.gemini_formatter import generate_formatted_report
 
 st.set_page_config(
-    page_title="LeafLens — AI Plant Leaf Health Analyzer",
+    page_title="BioCare Analysis",
     page_icon="🌿",
     layout="wide",
     initial_sidebar_state="collapsed"
@@ -43,7 +43,7 @@ st.markdown("""
 """, unsafe_allow_html=True)
 
 def main():
-    st.title("🌿 LeafLens")
+    st.title("🌿 BioCare Analysis")
     st.subheader("AI Powered Plant Health & Disease Analysis")
     st.write("Upload a clear photograph of a plant leaf to identify possible diseases, visible stress symptoms and recommended next steps.")
     st.markdown("---")
@@ -134,7 +134,7 @@ def main():
 
     # Technical Architecture Section
     st.markdown("---")
-    st.header("How LeafLens Works")
+    st.header("How BioCare Analysis Works")
     
     st.markdown("""
     ```mermaid
@@ -153,7 +153,7 @@ def main():
     st.markdown("""
     **1 — INPUT**: User uploads an RGB photograph of a plant leaf.  
     **2 — PREPROCESSING**: The image is converted to RGB, resized to 128 × 128 pixels and transformed into the numerical format expected by the trained neural network.  
-    **3 — CNN MODEL**: LeafLens uses a TensorFlow/Keras Convolutional Neural Network. Convolution layers learn visual patterns such as colour changes, spots, lesions and leaf textures.  
+    **3 — CNN MODEL**: BioCare Analysis uses a TensorFlow/Keras Convolutional Neural Network. Convolution layers learn visual patterns such as colour changes, spots, lesions and leaf textures.  
     **4 — CLASSIFICATION**: The final neural-network layer produces probability scores for 38 supported plant health and disease classes. The class with the highest probability becomes the primary prediction.  
     **5 — SYMPTOM ANALYSIS**: Basic computer-vision measurements estimate visible characteristics such as green, yellow and brown regions. These observations supplement the CNN prediction.  
     **6 — RECOMMENDATION ENGINE**: The disease prediction and visible symptoms are mapped to concise possible causes and general plant-care recommendations.  
@@ -197,12 +197,12 @@ def main():
         st.write("The uploaded image must be transformed to the same dimensions and numerical format used when the model was trained.")
         
         st.write("**Inference**")
-        st.write("Inference means using an already-trained model to make a prediction on a new image. LeafLens performs inference; it does not train the CNN every time a user uploads an image.")
+        st.write("Inference means using an already-trained model to make a prediction on a new image. BioCare Analysis performs inference; it does not train the CNN every time a user uploads an image.")
         
         st.write("**Gemini**")
         st.write("Gemini is optional and is used only for natural-language presentation of structured results.")
 
-    st.markdown("<p class='footer-text'>LeafLens is an educational prototype. Results are preliminary and should not replace professional agricultural testing.</p>", unsafe_allow_html=True)
+    st.markdown("<p class='footer-text'>BioCare Analysis is an educational prototype. Results are preliminary and should not replace professional agricultural testing.</p>", unsafe_allow_html=True)
 
 if __name__ == "__main__":
     main()

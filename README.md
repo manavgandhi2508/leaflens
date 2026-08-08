@@ -1,7 +1,7 @@
-# LeafLens
+# BioCare Analysis
 
 ## What it does
-LeafLens is an educational prototype demonstrating how computer vision can assist with preliminary plant-health inspection. It uses a Convolutional Neural Network (CNN) to predict plant diseases and basic computer vision to identify visual symptoms like yellowing or browning. Optionally, it uses the Google Gemini API to formulate natural language summaries.
+BioCare Analysis is an educational prototype demonstrating how computer vision can assist with preliminary plant-health inspection. It uses a Convolutional Neural Network (CNN) to predict plant diseases and basic computer vision to identify visual symptoms like yellowing or browning. Optionally, it uses the Google Gemini API to formulate natural language summaries.
 
 ## Architecture
 - **Frontend**: Streamlit
