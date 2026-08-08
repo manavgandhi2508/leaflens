@@ -1,0 +1,11 @@
+[build]
+  # Streamlit requires a python server environment. 
+  # Netlify is primarily for static sites and serverless functions (Node/Go/Python via AWS Lambda).
+  # To deploy a Streamlit app easily, we highly recommend using Render, Railway, or Streamlit Community Cloud instead.
+  # If you must use Netlify, you will need to wrap the app in a docker container (not supported natively by Netlify)
+  # or adapt it using specialized serverless wrappers.
+  command = "echo 'Streamlit apps require a running Python server (e.g. Streamlit Community Cloud, Render) and cannot be natively built as static sites on Netlify without custom wrappers.'"
+  publish = "."
+
+[build.environment]
+  PYTHON_VERSION = "3.10"
