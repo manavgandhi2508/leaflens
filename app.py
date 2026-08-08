@@ -63,7 +63,7 @@ def main():
             
             if uploaded_file is not None:
                 image = load_image_from_upload(uploaded_file)
-                st.image(image, use_column_width=True, caption="Uploaded Leaf Preview")
+                st.image(image, use_container_width=True, caption="Uploaded Leaf Preview", output_format="PNG")
                 st.caption(f"**Filename:** {uploaded_file.name} | **Resolution:** {image.size[0]}x{image.size[1]}px")
                 analyze_button = st.button("🔍 Analyze Leaf", use_container_width=True, type="primary")
             else:

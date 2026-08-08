@@ -26,14 +26,19 @@ def load_image_from_upload(uploaded_file) -> Image.Image:
     """Loads an image from a Streamlit uploaded file and sanitizes it."""
     image = Image.open(uploaded_file)
     
-    # Safely strip EXIF data and apply rotation (prevents Streamlit TypeErrors on mobile images)
+    # Safely strip EXIF data and apply rotation
     try:
         image = ImageOps.exif_transpose(image)
     except Exception:
         pass
         
-    # Convert to standard RGB to prevent rendering errors in st.image
+    # Convert to standard RGB
     if image.mode != 'RGB':
         image = image.convert('RGB')
         
-    return image
+    # Strip ALL metadata (including broken EXIF) by copying data to a fresh image
+    # This completely prevents Streamlit TypeError crashes on mobile photos.
+    clean_image = Image.new("RGB", image.size)
+    clean_image.paste(image)
+        
+    return clean_image
